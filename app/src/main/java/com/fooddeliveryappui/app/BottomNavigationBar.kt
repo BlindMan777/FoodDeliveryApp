@@ -1,5 +1,6 @@
 package com.fooddeliveryappui.app
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,6 +21,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.fooddeliveryappui.app.ui.theme.OrangeBase
+import com.fooddeliveryappui.app.ui.theme.White
 
 sealed class BottomNavigationBarItems(val iconID: Int, val iconDescr: Int) {
     data object Home: BottomNavigationBarItems(R.drawable.home_icon, R.string.home)
@@ -43,6 +45,7 @@ fun BottomNavBar(
     NavigationBar(
         modifier = modifier
             .height(60.dp)
+            .background(White)
             .clip(shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp)),
         containerColor = OrangeBase
     ) {

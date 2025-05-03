@@ -42,6 +42,8 @@ fun AppScreen(modifier: Modifier = Modifier) {
         ) {
             Spacer(modifier = Modifier.height(62.dp))
             Search()
+            Spacer(modifier = Modifier.height(28.dp))
+            MenuTabs()
         }
     }
 }
