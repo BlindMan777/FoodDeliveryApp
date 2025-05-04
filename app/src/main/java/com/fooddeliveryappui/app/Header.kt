@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,25 +19,31 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.fooddeliveryappui.app.ui.theme.Font
-import com.fooddeliveryappui.app.ui.theme.OrangeBase
-import com.fooddeliveryappui.app.ui.theme.White
 
-sealed class SearchItems(val iconID: Int, val descrID: Int, val horizontalPadding: Int, val verticalPadding: Int) {
-    data object Basket: SearchItems(R.drawable.basket_icon, R.string.basket, 5, 5)
-    data object Notifications: SearchItems(R.drawable.notification_icon, R.string.notification, 6, 3)
-    data object Profile: SearchItems(R.drawable.profile_icon, R.string.profile, 7, 4)
+sealed class SearchItems(
+    val iconID: Int,
+    val descrID: Int,
+    val horizontalPadding: Dp,
+    val verticalPadding: Dp
+) {
+    data object Basket : SearchItems(R.drawable.basket_icon, R.string.basket, 5.dp, 5.dp)
+    data object Notifications :
+        SearchItems(R.drawable.notification_icon, R.string.notification, 6.dp, 3.dp)
+
+    data object Profile : SearchItems(R.drawable.profile_icon, R.string.profile, 7.dp, 4.dp)
 }
 
 @Composable
-fun Search(modifier: Modifier = Modifier) {
+fun Header(modifier: Modifier = Modifier) {
     var textState by remember {
         mutableStateOf("")
     }
@@ -55,7 +62,7 @@ fun Search(modifier: Modifier = Modifier) {
         BasicTextField(
             modifier = Modifier
                 .background(
-                    color = White,
+                    color = MaterialTheme.colorScheme.secondary,
                     shape = RoundedCornerShape(30.dp)
                 )
                 .padding(12.dp, 3.dp, 5.dp, 3.dp)
@@ -67,7 +74,7 @@ fun Search(modifier: Modifier = Modifier) {
             singleLine = true,
             textStyle = TextStyle(
                 fontSize = 12.sp,
-                color = Font
+                color = MaterialTheme.colorScheme.onSecondary
             ),
             decorationBox = { innerTextField ->
                 Row(
@@ -91,21 +98,14 @@ fun Search(modifier: Modifier = Modifier) {
                     FilterButton()
                 }
             },
-            cursorBrush = SolidColor(Font)
+            cursorBrush = SolidColor(MaterialTheme.colorScheme.onSecondary)
         )
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items.forEach { item ->
                 SearchItem(
-                    modifier = Modifier
-                        .background(
-                            color = White,
-                            shape = RoundedCornerShape(10.dp)
-                        )
-                        .padding(item.horizontalPadding.dp, item.verticalPadding.dp),
-                    iconID = item.iconID,
-                    descriptionID = item.descrID
+                    searchItem = item
                 )
             }
         }
@@ -115,12 +115,17 @@ fun Search(modifier: Modifier = Modifier) {
 @Composable
 fun SearchItem(
     modifier: Modifier = Modifier,
-    iconID: Int,
-    descriptionID: Int,
-    iconColor: Color = OrangeBase
+    searchItem: SearchItems,
+    iconColor: Color = MaterialTheme.colorScheme.primary
 ) {
     Row(
         modifier = modifier
+            .background(
+                color = MaterialTheme.colorScheme.secondary,
+                shape = RoundedCornerShape(10.dp)
+            )
+            .clip(RoundedCornerShape(10.dp))
+            .padding(searchItem.horizontalPadding, searchItem.verticalPadding)
             .clickable(
                 onClick = {}
             ),
@@ -128,8 +133,8 @@ fun SearchItem(
         horizontalArrangement = Arrangement.Center
     ) {
         Icon(
-            painter = painterResource(iconID),
-            contentDescription = stringResource(descriptionID),
+            painter = painterResource(searchItem.iconID),
+            contentDescription = stringResource(searchItem.descrID),
             tint = iconColor
         )
     }

@@ -4,11 +4,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,6 +20,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,25 +33,26 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.fooddeliveryappui.app.ui.theme.Font
-import com.fooddeliveryappui.app.ui.theme.OrangeBase
-import com.fooddeliveryappui.app.ui.theme.White
-import com.fooddeliveryappui.app.ui.theme.YellowBase
-import com.fooddeliveryappui.app.ui.theme.Yellow_2
 
-sealed class MenuTabsList(val label: Int, val iconID: Int, val horizontalPaddings: Int) {
-    data object Snacks: MenuTabsList(R.string.snacks, R.drawable.snacks_icon, 8)
-    data object Meal: MenuTabsList(R.string.meal, R.drawable.meal_icon, 16)
-    data object Vegan: MenuTabsList(R.string.vegan, R.drawable.vegan_icon, 6)
-    data object Dessert: MenuTabsList(R.string.dessert, R.drawable.dessert_icon, 10)
-    data object Drinks: MenuTabsList(R.string.drinks, R.drawable.drinks_icon, 14)
+sealed class MenuTabsList(val label: Int, val iconID: Int, val horizontalPaddings: Dp) {
+    data object Snacks : MenuTabsList(R.string.snacks, R.drawable.snacks_icon, 8.dp)
+    data object Meal : MenuTabsList(R.string.meal, R.drawable.meal_icon, 16.dp)
+    data object Vegan : MenuTabsList(R.string.vegan, R.drawable.vegan_icon, 6.dp)
+    data object Dessert : MenuTabsList(R.string.dessert, R.drawable.dessert_icon, 10.dp)
+    data object Drinks : MenuTabsList(R.string.drinks, R.drawable.drinks_icon, 14.dp)
 }
 
-data class MenuTabsContentItems(val label: Int, val imgID: Int, val rate: Double, val price: Double, val descr: Int)
+data class MenuTabsContentItems(
+    val label: String,
+    val imgID: Int,
+    val rate: Double,
+    val price: Double,
+    val descr: String
+)
 
 @Composable
 fun MenuTabs(
@@ -63,9 +67,35 @@ fun MenuTabs(
     )
 
     val menuDessertItems = listOf(
-        MenuTabsContentItems(R.string.chocolate_brownie, R.drawable.brownie_img, 5.0, 15.0, R.string.chocolate_brownie_descr),
-        MenuTabsContentItems(R.string.macarons, R.drawable.macarons_img, 4.0, 12.9, R.string.macarons_descr)
+        MenuTabsContentItems(
+            stringResource(R.string.chocolate_brownie),
+            R.drawable.brownie_img,
+            5.0,
+            15.0,
+            stringResource(R.string.chocolate_brownie_descr)
+        ),
+        MenuTabsContentItems(
+            stringResource(R.string.macarons),
+            R.drawable.macarons_img,
+            4.0,
+            12.9,
+            stringResource(R.string.macarons)
+        ),
+        MenuTabsContentItems(
+            stringResource(R.string.chocolate_brownie),
+            R.drawable.brownie_img,
+            5.0,
+            15.0,
+            stringResource(R.string.chocolate_brownie_descr)
+        ),
+        MenuTabsContentItems(
+            stringResource(R.string.macarons),
+            R.drawable.macarons_img,
+            4.0,
+            12.9,
+            stringResource(R.string.macarons_descr)
         )
+    )
 
     var selectedMenuItem: MenuTabsList by remember {
         mutableStateOf(MenuTabsList.Dessert)
@@ -73,12 +103,12 @@ fun MenuTabs(
 
     val selectedIndex = menuItems.indexOf(selectedMenuItem)
 
-    Column (
+    Column(
         modifier = modifier
             .fillMaxWidth()
             .fillMaxHeight()
             .background(
-                color = OrangeBase,
+                color = MaterialTheme.colorScheme.primary,
                 shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp)
             )
             .padding(top = 16.dp)
@@ -88,17 +118,20 @@ fun MenuTabs(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Spacer(
+            Box(
                 modifier = Modifier
                     .height(103.dp)
                     .width(26.dp)
                     .background(
-                        color = White,
+                        color = MaterialTheme.colorScheme.secondary,
                         shape = RoundedCornerShape(topStart = 20.dp)
                     )
                     .background(
-                        color = OrangeBase,
-                        shape = if(selectedIndex == 0) RoundedCornerShape(bottomEnd = 30.dp, topStart = 12.dp) else RoundedCornerShape(topStart = 12.dp)
+                        color = MaterialTheme.colorScheme.primary,
+                        shape = if (selectedIndex == 0) RoundedCornerShape(
+                            bottomEnd = 30.dp,
+                            topStart = 12.dp
+                        ) else RoundedCornerShape(topStart = 12.dp)
                     )
             )
             menuItems.forEachIndexed { index, item ->
@@ -111,57 +144,59 @@ fun MenuTabs(
                     modifier = Modifier
                         .weight(1f)
                         .background(
-                            color = White,
+                            color = MaterialTheme.colorScheme.secondary,
                             shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp)
                         )
                         .background(
-                            color = if(isSelected) White else OrangeBase,
+                            color = if (isSelected) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary,
                             shape =
-                            if(isSelected) {
-                                RoundedCornerShape(30.dp)
-                            }else if(isNeighborLeft){
-                                RoundedCornerShape(bottomEnd = 30.dp)
-                            }else if(isNeighborRight){
-                                RoundedCornerShape(bottomStart = 30.dp)
-                            } else {
-                                RoundedCornerShape(0.dp)
-                            }
+                                if (isSelected) {
+                                    RoundedCornerShape(30.dp)
+                                } else if (isNeighborLeft) {
+                                    RoundedCornerShape(bottomEnd = 30.dp)
+                                } else if (isNeighborRight) {
+                                    RoundedCornerShape(bottomStart = 30.dp)
+                                } else {
+                                    RoundedCornerShape(0.dp)
+                                }
                         )
                         .clip(shape = RoundedCornerShape(30.dp)),
-                    iconID = item.iconID,
-                    label = item.label,
-                    horizontalPaddings = item.horizontalPaddings,
-                    iconBackgroundColor = if (selectedMenuItem == item) YellowBase else Yellow_2,
+                    menuTab = item,
+                    iconBackgroundColor = if (selectedMenuItem == item) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.onSurface,
                     onClick = {
                         selectedMenuItem = item
                     }
                 )
             }
-            Spacer(
+            Box(
                 modifier = Modifier
                     .height(103.dp)
                     .width(26.dp)
                     .background(
-                        color = White,
+                        color = MaterialTheme.colorScheme.secondary,
                         shape = RoundedCornerShape(topEnd = 20.dp)
                     )
                     .background(
-                        color = OrangeBase,
-                        shape = if(selectedIndex == menuItems.size - 1) RoundedCornerShape(bottomStart = 30.dp, topEnd = 12.dp) else RoundedCornerShape(topEnd = 12.dp)
+                        color = MaterialTheme.colorScheme.primary,
+                        shape = if (selectedIndex == menuItems.size - 1) RoundedCornerShape(
+                            bottomStart = 30.dp,
+                            topEnd = 12.dp
+                        ) else RoundedCornerShape(topEnd = 12.dp)
                     )
             )
         }
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
+                .fillMaxSize()
                 .background(
-                    color = White,
-                    shape = if(selectedIndex == 0) RoundedCornerShape(topEnd = 30.dp) else if(selectedIndex == menuItems.size - 1) RoundedCornerShape(topStart = 30.dp) else RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp)
+                    color = MaterialTheme.colorScheme.secondary,
+                    shape = if (selectedIndex == 0) RoundedCornerShape(topEnd = 30.dp) else if (selectedIndex == menuItems.size - 1) RoundedCornerShape(
+                        topStart = 30.dp
+                    ) else RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp)
                 )
                 .padding(horizontal = 36.dp, 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
-        ){
+        ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -171,14 +206,14 @@ fun MenuTabs(
                 Row {
                     Text(
                         text = "Sort By",
-                        color = Color(0xFF070707),
+                        color = MaterialTheme.colorScheme.onSecondary,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Light
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         text = "Popular",
-                        color = Color(0xFFE95322),
+                        color = MaterialTheme.colorScheme.primary,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Light
                     )
@@ -190,17 +225,11 @@ fun MenuTabs(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(26.dp)
             ) {
-               for(i in 0 .. 2) {
-                   items(menuDessertItems) { item ->
-                       MenuTabContentItem(
-                           imgID = item.imgID,
-                           label = item.label,
-                           rate = item.rate,
-                           price = item.price,
-                           descr = item.descr
-                       )
-                   }
-               }
+                items(menuDessertItems) { item ->
+                    MenuTabContentItem(
+                        menuTabsContentItem = item
+                    )
+                }
             }
         }
     }
@@ -209,13 +238,11 @@ fun MenuTabs(
 @Composable
 fun RowScope.MenuTab(
     modifier: Modifier = Modifier,
-    iconID: Int,
-    label: Int,
-    iconColor: Color = OrangeBase,
-    horizontalPaddings: Int,
+    menuTab: MenuTabsList,
+    iconColor: Color = MaterialTheme.colorScheme.primary,
     iconBackgroundColor: Color,
     onClick: () -> Unit
-    ) {
+) {
     Column(
         modifier = modifier
             .clickable(
@@ -234,19 +261,19 @@ fun RowScope.MenuTab(
                         color = iconBackgroundColor,
                         shape = RoundedCornerShape(30.dp)
                     )
-                    .padding(horizontal = horizontalPaddings.dp, vertical = 12.dp)
+                    .padding(horizontal = menuTab.horizontalPaddings, vertical = 12.dp)
             ) {
                 Icon(
                     modifier = Modifier
                         .size(37.dp),
-                    painter = painterResource(iconID),
-                    contentDescription = stringResource(label),
+                    painter = painterResource(menuTab.iconID),
+                    contentDescription = stringResource(menuTab.label),
                     tint = iconColor
                 )
             }
             Text(
-                text = stringResource(label),
-                color = Font,
+                text = stringResource(menuTab.label),
+                color = MaterialTheme.colorScheme.onSecondary,
                 fontSize = 12.sp
             )
         }
@@ -256,11 +283,7 @@ fun RowScope.MenuTab(
 @Composable
 fun MenuTabContentItem(
     modifier: Modifier = Modifier,
-    imgID: Int,
-    label: Int,
-    rate: Double,
-    price: Double,
-    descr: Int
+    menuTabsContentItem: MenuTabsContentItems
 ) {
     Column(
         modifier = modifier
@@ -271,8 +294,8 @@ fun MenuTabContentItem(
             modifier = Modifier
                 .height(176.dp)
                 .fillMaxWidth(),
-            painter = painterResource(imgID),
-            contentDescription = stringResource(label)
+            painter = painterResource(menuTabsContentItem.imgID),
+            contentDescription = menuTabsContentItem.label
         )
         Spacer(modifier = Modifier.height(8.dp))
         Row(
@@ -281,22 +304,22 @@ fun MenuTabContentItem(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Row (
+            Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ){
+            ) {
                 Text(
-                    text = stringResource(label),
+                    text = menuTabsContentItem.label,
                     fontSize = 18.sp,
-                    color = Font,
+                    color = MaterialTheme.colorScheme.onSecondary,
                     fontWeight = FontWeight.SemiBold
                 )
-                Spacer(
+                Box(
                     modifier = Modifier
                         .height(5.dp)
                         .width(5.dp)
                         .background(
-                            color = OrangeBase,
+                            color = MaterialTheme.colorScheme.primary,
                             shape = RoundedCornerShape(100)
                         )
                 )
@@ -304,7 +327,7 @@ fun MenuTabContentItem(
                     modifier = Modifier
                         .height(16.dp)
                         .background(
-                            color = OrangeBase,
+                            color = MaterialTheme.colorScheme.primary,
                             shape = RoundedCornerShape(30.dp)
                         )
                         .padding(horizontal = 3.dp),
@@ -312,10 +335,10 @@ fun MenuTabContentItem(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = "$rate",
+                        text = "${menuTabsContentItem.rate}",
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Normal,
-                        color = White,
+                        color = MaterialTheme.colorScheme.secondary,
                         lineHeight = 12.sp
                     )
                     Icon(
@@ -323,15 +346,15 @@ fun MenuTabContentItem(
                             .size(12.dp),
                         painter = painterResource(R.drawable.star_icon),
                         contentDescription = stringResource(R.string.star),
-                        tint = YellowBase
+                        tint = MaterialTheme.colorScheme.background
                     )
                 }
             }
             Text(
-                text = "$${price}0",
+                text = "$${menuTabsContentItem.price}0",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Normal,
-                color = OrangeBase
+                color = MaterialTheme.colorScheme.primary
             )
         }
         Spacer(modifier = Modifier.height(8.dp))
@@ -341,21 +364,21 @@ fun MenuTabContentItem(
             Text(
                 modifier = Modifier
                     .weight(3f),
-                text = stringResource(descr),
+                text = menuTabsContentItem.descr,
                 fontSize = 12.sp,
-                color = Font,
+                color = MaterialTheme.colorScheme.onSecondary,
                 fontWeight = FontWeight.Light,
                 lineHeight = 10.sp
             )
             Spacer(modifier = Modifier.weight(2f))
         }
         Spacer(modifier = Modifier.height(4.dp))
-        Spacer(
+        Box(
             modifier = Modifier
                 .height(1.dp)
                 .fillMaxWidth()
                 .background(
-                    color = OrangeBase,
+                    color = MaterialTheme.colorScheme.primary,
                     shape = RoundedCornerShape(100)
                 )
         )

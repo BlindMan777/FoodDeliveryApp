@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -32,6 +33,7 @@ fun AppScreen(modifier: Modifier = Modifier) {
     Scaffold(
         modifier = modifier
             .fillMaxSize(),
+        containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             BottomNavBar()
         }
@@ -41,7 +43,7 @@ fun AppScreen(modifier: Modifier = Modifier) {
                 .padding(innerPadding)
         ) {
             Spacer(modifier = Modifier.height(62.dp))
-            Search()
+            Header()
             Spacer(modifier = Modifier.height(28.dp))
             MenuTabs()
         }
