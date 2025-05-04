@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">FoodDeliveryAppUI</string>
+    <string name="search">Search</string>
+    <string name="basket">Basket</string>
+    <string name="notification">Notification</string>
+    <string name="profile">Profile</string>
+    <string name="filter">Filter</string>
+    <string name="home">Home</string>
+    <string name="plate">Plate</string>
+    <string name="heart">Heart</string>
+    <string name="menu">Menu</string>
+    <string name="headphones">Headphones</string>
+    <string name="snacks">Snacks</string>
+    <string name="meal">Meal</string>
+    <string name="vegan">Vegan</string>
+    <string name="dessert">Dessert</string>
+    <string name="drinks">Drinks</string>
+    <string name="star">Star</string>
+    <string name="chocolate_brownie">Chocolate Brownie</string>
+    <string name="chocolate_brownie_descr">Premium cocoa, melted chocolate, and a hint of vanilla, creating a moist, fudgy center with a crisp, crackly top.</string>
+    <string name="macarons">Macarons</string>
+    <string name="macarons_descr">Delicate vanilla and chocolate macarons, featuring a crisp outer shell and a smooth.</string>
 </resources>
