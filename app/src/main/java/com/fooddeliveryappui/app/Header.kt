@@ -13,6 +13,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,6 +29,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 
 sealed class SearchItems(
     val iconID: Int,
@@ -44,15 +46,16 @@ sealed class SearchItems(
 
 @Composable
 fun Header(modifier: Modifier = Modifier) {
-    var textState by remember {
-        mutableStateOf("")
-    }
+
+    val viewModel: AppScreenViewModel = hiltViewModel()
+    val textState = viewModel.textState.collectAsState()
 
     val items = listOf(
         SearchItems.Basket,
         SearchItems.Notifications,
         SearchItems.Profile
     )
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -67,9 +70,9 @@ fun Header(modifier: Modifier = Modifier) {
                 )
                 .padding(12.dp, 3.dp, 5.dp, 3.dp)
                 .weight(1f),
-            value = textState,
+            value = textState.value,
             onValueChange = { newText ->
-                textState = newText
+                viewModel.updateText(newText)
             },
             singleLine = true,
             textStyle = TextStyle(
@@ -86,7 +89,7 @@ fun Header(modifier: Modifier = Modifier) {
                         modifier = Modifier.weight(1f),
                         contentAlignment = Alignment.CenterStart
                     ) {
-                        if (textState.isEmpty()) {
+                        if (textState.value.isEmpty()) {
                             Text(
                                 text = "Search",
                                 color = Color.Gray,

@@ -16,8 +16,4 @@
     <string name="dessert">Dessert</string>
     <string name="drinks">Drinks</string>
     <string name="star">Star</string>
-    <string name="chocolate_brownie">Chocolate Brownie</string>
-    <string name="chocolate_brownie_descr">Premium cocoa, melted chocolate, and a hint of vanilla, creating a moist, fudgy center with a crisp, crackly top.</string>
-    <string name="macarons">Macarons</string>
-    <string name="macarons_descr">Delicate vanilla and chocolate macarons, featuring a crisp outer shell and a smooth.</string>
 </resources>
