@@ -13,6 +13,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,6 +29,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import kotlinx.coroutines.flow.StateFlow
 
 sealed class SearchItems(
     val iconID: Int,
@@ -36,23 +39,23 @@ sealed class SearchItems(
     val verticalPadding: Dp
 ) {
     data object Basket : SearchItems(R.drawable.basket_icon, R.string.basket, 5.dp, 5.dp)
-    data object Notifications :
-        SearchItems(R.drawable.notification_icon, R.string.notification, 6.dp, 3.dp)
-
+    data object Notifications : SearchItems(R.drawable.notification_icon, R.string.notification, 6.dp, 3.dp)
     data object Profile : SearchItems(R.drawable.profile_icon, R.string.profile, 7.dp, 4.dp)
 }
 
 @Composable
-fun Header(modifier: Modifier = Modifier) {
-    var textState by remember {
-        mutableStateOf("")
-    }
+fun Header(
+    modifier: Modifier = Modifier,
+    textState: String,
+    updateText: (String) -> Unit
+) {
 
     val items = listOf(
         SearchItems.Basket,
         SearchItems.Notifications,
         SearchItems.Profile
     )
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -68,9 +71,7 @@ fun Header(modifier: Modifier = Modifier) {
                 .padding(12.dp, 3.dp, 5.dp, 3.dp)
                 .weight(1f),
             value = textState,
-            onValueChange = { newText ->
-                textState = newText
-            },
+            onValueChange = updateText,
             singleLine = true,
             textStyle = TextStyle(
                 fontSize = 12.sp,

@@ -23,10 +23,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,71 +34,174 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 
-sealed class MenuTabsList(val label: Int, val iconID: Int, val horizontalPaddings: Dp) {
-    data object Snacks : MenuTabsList(R.string.snacks, R.drawable.snacks_icon, 8.dp)
-    data object Meal : MenuTabsList(R.string.meal, R.drawable.meal_icon, 16.dp)
-    data object Vegan : MenuTabsList(R.string.vegan, R.drawable.vegan_icon, 6.dp)
-    data object Dessert : MenuTabsList(R.string.dessert, R.drawable.dessert_icon, 10.dp)
-    data object Drinks : MenuTabsList(R.string.drinks, R.drawable.drinks_icon, 14.dp)
+val menuItems = listOf(
+    MenuTabsContentItems(
+        "Mushroom Risotto",
+        R.drawable.risotto_img,
+        5.0,
+        15.0,
+        "Creamy mushroom risotto, cooked to perfection with arborio rice, wild mushrooms, Parmesan cheese, and white wine.",
+        FoodType.Snacks
+    ),
+    MenuTabsContentItems(
+        "Mushroom Risotto",
+        R.drawable.brownie_img,
+        5.0,
+        15.0,
+        "Creamy mushroom risotto, cooked to perfection with arborio rice, wild mushrooms, Parmesan cheese, and white wine.",
+        FoodType.Snacks
+    ),
+    MenuTabsContentItems(
+        "Broccoli Lasagna",
+        R.drawable.brownie_img,
+        4.0,
+        13.90,
+        "Tender broccoli florets, creamy ricotta cheese, savory marinara sauce, and topped with melted mozzarella.",
+        FoodType.Snacks
+    ),
+    MenuTabsContentItems(
+        "Mushroom Risotto",
+        R.drawable.risotto_img,
+        5.0,
+        15.0,
+        "Creamy mushroom risotto, cooked to perfection with arborio rice, wild mushrooms, Parmesan cheese, and white wine.",
+        FoodType.Meal
+    ),
+    MenuTabsContentItems(
+        "Mushroom Risotto",
+        R.drawable.brownie_img,
+        5.0,
+        15.0,
+        "Creamy mushroom risotto, cooked to perfection with arborio rice, wild mushrooms, Parmesan cheese, and white wine.",
+        FoodType.Meal
+    ),
+    MenuTabsContentItems(
+        "Broccoli Lasagna",
+        R.drawable.brownie_img,
+        4.0,
+        13.90,
+        "Tender broccoli florets, creamy ricotta cheese, savory marinara sauce, and topped with melted mozzarella.",
+        FoodType.Meal
+    ),
+    MenuTabsContentItems(
+        "Mushroom Risotto",
+        R.drawable.risotto_img,
+        5.0,
+        15.0,
+        "Creamy mushroom risotto, cooked to perfection with arborio rice, wild mushrooms, Parmesan cheese, and white wine.",
+        FoodType.Vegan
+    ),
+    MenuTabsContentItems(
+        "Broccoli Lasagna",
+        R.drawable.lasagna_img,
+        4.0,
+        13.90,
+        "Tender broccoli florets, creamy ricotta cheese, savory marinara sauce, and topped with melted mozzarella.",
+        FoodType.Vegan
+    ),
+    MenuTabsContentItems(
+        "Chocolate Brownie",
+        R.drawable.brownie_img,
+        5.0,
+        15.0,
+        "Premium cocoa, melted chocolate, and a hint of vanilla, creating a moist, fudgy center with a crisp, crackly top.",
+        FoodType.Dessert
+    ),
+    MenuTabsContentItems(
+        "Macarons",
+        R.drawable.macarons_img,
+        4.0,
+        12.9,
+        "Delicate vanilla and chocolate macarons, featuring a crisp outer shell and a smooth.",
+        FoodType.Dessert
+    ),
+    MenuTabsContentItems(
+        "Chocolate Brownie",
+        R.drawable.brownie_img,
+        5.0,
+        15.0,
+        "Premium cocoa, melted chocolate, and a hint of vanilla, creating a moist, fudgy center with a crisp, crackly top.",
+        FoodType.Dessert
+    ),
+    MenuTabsContentItems(
+        "Macarons",
+        R.drawable.macarons_img,
+        4.0,
+        12.9,
+        "Delicate vanilla and chocolate macarons, featuring a crisp outer shell and a smooth.",
+        FoodType.Dessert
+    ),
+    MenuTabsContentItems(
+        "Mushroom Risotto",
+        R.drawable.macarons_img,
+        5.0,
+        15.0,
+        "Creamy mushroom risotto, cooked to perfection with arborio rice, wild mushrooms, Parmesan cheese, and white wine.",
+        FoodType.Drinks
+    ),
+    MenuTabsContentItems(
+        "Mushroom Risotto",
+        R.drawable.brownie_img,
+        5.0,
+        15.0,
+        "Creamy mushroom risotto, cooked to perfection with arborio rice, wild mushrooms, Parmesan cheese, and white wine.",
+        FoodType.Drinks
+    ),
+    MenuTabsContentItems(
+        "Broccoli Lasagna",
+        R.drawable.brownie_img,
+        4.0,
+        13.90,
+        "Tender broccoli florets, creamy ricotta cheese, savory marinara sauce, and topped with melted mozzarella.",
+        FoodType.Drinks
+    )
+)
+
+enum class FoodType {Snacks, Meal, Vegan, Dessert, Drinks}
+
+sealed class MenuTabsList(
+    val label: Int,
+    val iconID: Int,
+    val horizontalPaddings: Dp,
+    val type: FoodType
+) {
+    data object Snacks : MenuTabsList(R.string.snacks, R.drawable.snacks_icon, 8.dp, FoodType.Snacks)
+    data object Meal : MenuTabsList(R.string.meal, R.drawable.meal_icon, 16.dp, FoodType.Meal)
+    data object Vegan : MenuTabsList(R.string.vegan, R.drawable.vegan_icon, 6.dp, FoodType.Vegan)
+    data object Dessert : MenuTabsList(R.string.dessert, R.drawable.dessert_icon, 10.dp, FoodType.Dessert)
+    data object Drinks : MenuTabsList(R.string.drinks, R.drawable.drinks_icon, 14.dp, FoodType.Drinks)
 }
+
+val tabItems = listOf(
+    MenuTabsList.Snacks,
+    MenuTabsList.Meal,
+    MenuTabsList.Vegan,
+    MenuTabsList.Dessert,
+    MenuTabsList.Drinks
+)
 
 data class MenuTabsContentItems(
     val label: String,
     val imgID: Int,
     val rate: Double,
     val price: Double,
-    val descr: String
+    val descr: String,
+    val type: FoodType
 )
 
 @Composable
 fun MenuTabs(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: MenuViewModel = hiltViewModel(),
 ) {
-    val menuItems = listOf(
-        MenuTabsList.Snacks,
-        MenuTabsList.Meal,
-        MenuTabsList.Vegan,
-        MenuTabsList.Dessert,
-        MenuTabsList.Drinks
-    )
 
-    val menuDessertItems = listOf(
-        MenuTabsContentItems(
-            stringResource(R.string.chocolate_brownie),
-            R.drawable.brownie_img,
-            5.0,
-            15.0,
-            stringResource(R.string.chocolate_brownie_descr)
-        ),
-        MenuTabsContentItems(
-            stringResource(R.string.macarons),
-            R.drawable.macarons_img,
-            4.0,
-            12.9,
-            stringResource(R.string.macarons)
-        ),
-        MenuTabsContentItems(
-            stringResource(R.string.chocolate_brownie),
-            R.drawable.brownie_img,
-            5.0,
-            15.0,
-            stringResource(R.string.chocolate_brownie_descr)
-        ),
-        MenuTabsContentItems(
-            stringResource(R.string.macarons),
-            R.drawable.macarons_img,
-            4.0,
-            12.9,
-            stringResource(R.string.macarons_descr)
-        )
-    )
+    val selectedMenuItem = viewModel.selectedMenuItem.collectAsState()
 
-    var selectedMenuItem: MenuTabsList by remember {
-        mutableStateOf(MenuTabsList.Dessert)
-    }
+    val currentContent = menuItems.filter { it.type == selectedMenuItem.value.type }
 
-    val selectedIndex = menuItems.indexOf(selectedMenuItem)
+    val selectedIndex = tabItems.indexOf(selectedMenuItem.value)
 
     Column(
         modifier = modifier
@@ -134,9 +234,9 @@ fun MenuTabs(
                         ) else RoundedCornerShape(topStart = 12.dp)
                     )
             )
-            menuItems.forEachIndexed { index, item ->
+            tabItems.forEachIndexed { index, item ->
 
-                val isSelected = selectedMenuItem == item
+                val isSelected = selectedMenuItem.value == item
                 val isNeighborLeft = index == selectedIndex - 1
                 val isNeighborRight = index == selectedIndex + 1
 
@@ -163,8 +263,8 @@ fun MenuTabs(
                         .clip(shape = RoundedCornerShape(30.dp)),
                     menuTab = item,
                     iconBackgroundColor = if (selectedMenuItem == item) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.onSurface,
-                    onClick = {
-                        selectedMenuItem = item
+                    onClickTab = {
+                        viewModel.selectTabItem(item)
                     }
                 )
             }
@@ -178,7 +278,7 @@ fun MenuTabs(
                     )
                     .background(
                         color = MaterialTheme.colorScheme.primary,
-                        shape = if (selectedIndex == menuItems.size - 1) RoundedCornerShape(
+                        shape = if (selectedIndex == tabItems.size - 1) RoundedCornerShape(
                             bottomStart = 30.dp,
                             topEnd = 12.dp
                         ) else RoundedCornerShape(topEnd = 12.dp)
@@ -190,7 +290,7 @@ fun MenuTabs(
                 .fillMaxSize()
                 .background(
                     color = MaterialTheme.colorScheme.secondary,
-                    shape = if (selectedIndex == 0) RoundedCornerShape(topEnd = 30.dp) else if (selectedIndex == menuItems.size - 1) RoundedCornerShape(
+                    shape = if (selectedIndex == 0) RoundedCornerShape(topEnd = 30.dp) else if (selectedIndex == tabItems.size - 1) RoundedCornerShape(
                         topStart = 30.dp
                     ) else RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp)
                 )
@@ -225,7 +325,7 @@ fun MenuTabs(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(26.dp)
             ) {
-                items(menuDessertItems) { item ->
+                items(currentContent) { item ->
                     MenuTabContentItem(
                         menuTabsContentItem = item
                     )
@@ -241,12 +341,12 @@ fun RowScope.MenuTab(
     menuTab: MenuTabsList,
     iconColor: Color = MaterialTheme.colorScheme.primary,
     iconBackgroundColor: Color,
-    onClick: () -> Unit
+    onClickTab: () -> Unit
 ) {
     Column(
         modifier = modifier
             .clickable(
-                onClick = onClick
+                onClick = onClickTab
             )
             .padding(start = 10.dp, top = 10.dp, end = 10.dp, bottom = 4.dp),
         horizontalAlignment = Alignment.CenterHorizontally
