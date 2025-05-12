@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import kotlinx.coroutines.flow.StateFlow
 
 sealed class SearchItems(
     val iconID: Int,
@@ -38,17 +39,16 @@ sealed class SearchItems(
     val verticalPadding: Dp
 ) {
     data object Basket : SearchItems(R.drawable.basket_icon, R.string.basket, 5.dp, 5.dp)
-    data object Notifications :
-        SearchItems(R.drawable.notification_icon, R.string.notification, 6.dp, 3.dp)
-
+    data object Notifications : SearchItems(R.drawable.notification_icon, R.string.notification, 6.dp, 3.dp)
     data object Profile : SearchItems(R.drawable.profile_icon, R.string.profile, 7.dp, 4.dp)
 }
 
 @Composable
-fun Header(modifier: Modifier = Modifier) {
-
-    val viewModel: AppScreenViewModel = hiltViewModel()
-    val textState = viewModel.textState.collectAsState()
+fun Header(
+    modifier: Modifier = Modifier,
+    textState: String,
+    updateText: (String) -> Unit
+) {
 
     val items = listOf(
         SearchItems.Basket,
@@ -70,10 +70,8 @@ fun Header(modifier: Modifier = Modifier) {
                 )
                 .padding(12.dp, 3.dp, 5.dp, 3.dp)
                 .weight(1f),
-            value = textState.value,
-            onValueChange = { newText ->
-                viewModel.updateText(newText)
-            },
+            value = textState,
+            onValueChange = updateText,
             singleLine = true,
             textStyle = TextStyle(
                 fontSize = 12.sp,
@@ -89,7 +87,7 @@ fun Header(modifier: Modifier = Modifier) {
                         modifier = Modifier.weight(1f),
                         contentAlignment = Alignment.CenterStart
                     ) {
-                        if (textState.value.isEmpty()) {
+                        if (textState.isEmpty()) {
                             Text(
                                 text = "Search",
                                 color = Color.Gray,

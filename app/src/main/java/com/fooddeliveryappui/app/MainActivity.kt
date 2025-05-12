@@ -16,6 +16,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fooddeliveryappui.app.ui.theme.FoodDeliveryAppUITheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -34,14 +36,17 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun AppScreen(modifier: Modifier = Modifier) {
+fun AppScreen(
+    viewModel: MenuViewModel = hiltViewModel()
+) {
+    val textState = viewModel.textState.collectAsStateWithLifecycle()
     val view = LocalView.current
     LaunchedEffect(Unit) {
         delay(100)
         view.requestLayout()
     }
     Scaffold(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
@@ -53,10 +58,14 @@ fun AppScreen(modifier: Modifier = Modifier) {
                 .padding(innerPadding)
         ) {
             Spacer(modifier = Modifier.height(62.dp))
-            Header()
+            Header(
+                textState = textState.value,
+                updateText = { newText ->
+                    viewModel.updateText(newText)
+                }
+            )
             Spacer(modifier = Modifier.height(28.dp))
             MenuTabs()
         }
     }
 }
-
