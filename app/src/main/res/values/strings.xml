@@ -16,4 +16,7 @@
     <string name="dessert">Dessert</string>
     <string name="drinks">Drinks</string>
     <string name="star">Star</string>
+    <string name="favourite">favourite</string>
+    <string name="turn_back">turn back</string>
+    <string name="add_item">Add item</string>
 </resources>

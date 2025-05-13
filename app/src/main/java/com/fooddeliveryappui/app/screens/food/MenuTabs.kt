@@ -1,4 +1,4 @@
-package com.fooddeliveryappui.app
+package com.fooddeliveryappui.app.screens.food
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -35,13 +35,18 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.fooddeliveryappui.app.R
+import com.fooddeliveryappui.app.components.CustomDot
+import com.fooddeliveryappui.app.components.Devider
+import com.fooddeliveryappui.app.components.FilterButton
+import com.fooddeliveryappui.app.components.Rate
 
 val menuItems = listOf(
     MenuTabsContentItems(
         "Mushroom Risotto",
         R.drawable.risotto_img,
         5.0,
-        15.0,
+        15.00,
         "Creamy mushroom risotto, cooked to perfection with arborio rice, wild mushrooms, Parmesan cheese, and white wine.",
         FoodType.Snacks
     ),
@@ -49,7 +54,7 @@ val menuItems = listOf(
         "Mushroom Risotto",
         R.drawable.brownie_img,
         5.0,
-        15.0,
+        15.00,
         "Creamy mushroom risotto, cooked to perfection with arborio rice, wild mushrooms, Parmesan cheese, and white wine.",
         FoodType.Snacks
     ),
@@ -65,7 +70,7 @@ val menuItems = listOf(
         "Mushroom Risotto",
         R.drawable.risotto_img,
         5.0,
-        15.0,
+        15.00,
         "Creamy mushroom risotto, cooked to perfection with arborio rice, wild mushrooms, Parmesan cheese, and white wine.",
         FoodType.Meal
     ),
@@ -73,7 +78,7 @@ val menuItems = listOf(
         "Mushroom Risotto",
         R.drawable.brownie_img,
         5.0,
-        15.0,
+        15.00,
         "Creamy mushroom risotto, cooked to perfection with arborio rice, wild mushrooms, Parmesan cheese, and white wine.",
         FoodType.Meal
     ),
@@ -89,7 +94,7 @@ val menuItems = listOf(
         "Mushroom Risotto",
         R.drawable.risotto_img,
         5.0,
-        15.0,
+        15.00,
         "Creamy mushroom risotto, cooked to perfection with arborio rice, wild mushrooms, Parmesan cheese, and white wine.",
         FoodType.Vegan
     ),
@@ -105,7 +110,7 @@ val menuItems = listOf(
         "Chocolate Brownie",
         R.drawable.brownie_img,
         5.0,
-        15.0,
+        15.00,
         "Premium cocoa, melted chocolate, and a hint of vanilla, creating a moist, fudgy center with a crisp, crackly top.",
         FoodType.Dessert
     ),
@@ -113,7 +118,7 @@ val menuItems = listOf(
         "Macarons",
         R.drawable.macarons_img,
         4.0,
-        12.9,
+        12.90,
         "Delicate vanilla and chocolate macarons, featuring a crisp outer shell and a smooth.",
         FoodType.Dessert
     ),
@@ -121,7 +126,7 @@ val menuItems = listOf(
         "Chocolate Brownie",
         R.drawable.brownie_img,
         5.0,
-        15.0,
+        15.00,
         "Premium cocoa, melted chocolate, and a hint of vanilla, creating a moist, fudgy center with a crisp, crackly top.",
         FoodType.Dessert
     ),
@@ -129,7 +134,7 @@ val menuItems = listOf(
         "Macarons",
         R.drawable.macarons_img,
         4.0,
-        12.9,
+        12.90,
         "Delicate vanilla and chocolate macarons, featuring a crisp outer shell and a smooth.",
         FoodType.Dessert
     ),
@@ -137,7 +142,7 @@ val menuItems = listOf(
         "Mushroom Risotto",
         R.drawable.macarons_img,
         5.0,
-        15.0,
+        15.00,
         "Creamy mushroom risotto, cooked to perfection with arborio rice, wild mushrooms, Parmesan cheese, and white wine.",
         FoodType.Drinks
     ),
@@ -145,7 +150,7 @@ val menuItems = listOf(
         "Mushroom Risotto",
         R.drawable.brownie_img,
         5.0,
-        15.0,
+        15.00,
         "Creamy mushroom risotto, cooked to perfection with arborio rice, wild mushrooms, Parmesan cheese, and white wine.",
         FoodType.Drinks
     ),
@@ -159,7 +164,7 @@ val menuItems = listOf(
     )
 )
 
-enum class FoodType {Snacks, Meal, Vegan, Dessert, Drinks}
+enum class FoodType { Snacks, Meal, Vegan, Dessert, Drinks }
 
 sealed class MenuTabsList(
     val label: Int,
@@ -167,11 +172,16 @@ sealed class MenuTabsList(
     val horizontalPaddings: Dp,
     val type: FoodType
 ) {
-    data object Snacks : MenuTabsList(R.string.snacks, R.drawable.snacks_icon, 8.dp, FoodType.Snacks)
+    data object Snacks :
+        MenuTabsList(R.string.snacks, R.drawable.snacks_icon, 8.dp, FoodType.Snacks)
+
     data object Meal : MenuTabsList(R.string.meal, R.drawable.meal_icon, 16.dp, FoodType.Meal)
     data object Vegan : MenuTabsList(R.string.vegan, R.drawable.vegan_icon, 6.dp, FoodType.Vegan)
-    data object Dessert : MenuTabsList(R.string.dessert, R.drawable.dessert_icon, 10.dp, FoodType.Dessert)
-    data object Drinks : MenuTabsList(R.string.drinks, R.drawable.drinks_icon, 14.dp, FoodType.Drinks)
+    data object Dessert :
+        MenuTabsList(R.string.dessert, R.drawable.dessert_icon, 10.dp, FoodType.Dessert)
+
+    data object Drinks :
+        MenuTabsList(R.string.drinks, R.drawable.drinks_icon, 14.dp, FoodType.Drinks)
 }
 
 val tabItems = listOf(
@@ -414,44 +424,13 @@ fun MenuTabContentItem(
                     color = MaterialTheme.colorScheme.onSecondary,
                     fontWeight = FontWeight.SemiBold
                 )
-                Box(
-                    modifier = Modifier
-                        .height(5.dp)
-                        .width(5.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.primary,
-                            shape = RoundedCornerShape(100)
-                        )
+                CustomDot()
+                Rate(
+                    rate = menuTabsContentItem.rate
                 )
-                Row(
-                    modifier = Modifier
-                        .height(16.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.primary,
-                            shape = RoundedCornerShape(30.dp)
-                        )
-                        .padding(horizontal = 3.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = "${menuTabsContentItem.rate}",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Normal,
-                        color = MaterialTheme.colorScheme.secondary,
-                        lineHeight = 12.sp
-                    )
-                    Icon(
-                        modifier = Modifier
-                            .size(12.dp),
-                        painter = painterResource(R.drawable.star_icon),
-                        contentDescription = stringResource(R.string.star),
-                        tint = MaterialTheme.colorScheme.background
-                    )
-                }
             }
             Text(
-                text = "$${menuTabsContentItem.price}0",
+                text = "$${menuTabsContentItem.price}",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Normal,
                 color = MaterialTheme.colorScheme.primary
@@ -468,19 +447,11 @@ fun MenuTabContentItem(
                 fontSize = 12.sp,
                 color = MaterialTheme.colorScheme.onSecondary,
                 fontWeight = FontWeight.Light,
-                lineHeight = 10.sp
+                lineHeight = 12.sp
             )
             Spacer(modifier = Modifier.weight(2f))
         }
         Spacer(modifier = Modifier.height(4.dp))
-        Box(
-            modifier = Modifier
-                .height(1.dp)
-                .fillMaxWidth()
-                .background(
-                    color = MaterialTheme.colorScheme.primary,
-                    shape = RoundedCornerShape(100)
-                )
-        )
+        Devider()
     }
 }

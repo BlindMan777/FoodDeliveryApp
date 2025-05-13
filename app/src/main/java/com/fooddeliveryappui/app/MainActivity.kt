@@ -12,15 +12,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.fooddeliveryappui.app.components.BottomNavBar
+import com.fooddeliveryappui.app.screens.food.MenuViewModel
+import com.fooddeliveryappui.app.screens.food.menuItems
+import com.fooddeliveryappui.app.screens.order.OrderScreen
 import com.fooddeliveryappui.app.ui.theme.FoodDeliveryAppUITheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -40,11 +41,7 @@ fun AppScreen(
     viewModel: MenuViewModel = hiltViewModel()
 ) {
     val textState = viewModel.textState.collectAsStateWithLifecycle()
-    val view = LocalView.current
-    LaunchedEffect(Unit) {
-        delay(100)
-        view.requestLayout()
-    }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -57,15 +54,18 @@ fun AppScreen(
             modifier = Modifier
                 .padding(innerPadding)
         ) {
-            Spacer(modifier = Modifier.height(62.dp))
-            Header(
-                textState = textState.value,
-                updateText = { newText ->
-                    viewModel.updateText(newText)
-                }
+            Spacer(modifier = Modifier.height(32.dp))
+            OrderScreen(
+                item = menuItems.first()
             )
-            Spacer(modifier = Modifier.height(28.dp))
-            MenuTabs()
+//            HeaderFood(
+//                textState = textState.value,
+//                updateText = { newText ->
+//                    viewModel.updateText(newText)
+//                }
+//            )
+//            Spacer(modifier = Modifier.height(28.dp))
+//            MenuTabs()
         }
     }
 }

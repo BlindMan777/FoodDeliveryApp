@@ -1,4 +1,4 @@
-package com.fooddeliveryappui.app
+package com.fooddeliveryappui.app.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.fooddeliveryappui.app.R
 
 sealed class BottomNavigationBarItems(val iconID: Int, val iconDescr: Int) {
     data object Home : BottomNavigationBarItems(R.drawable.home_icon, R.string.home)
