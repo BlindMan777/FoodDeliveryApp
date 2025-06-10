@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fooddeliveryappui.app.R
-import com.fooddeliveryappui.app.components.FilterButton
+import com.fooddeliveryappui.app.components.CustomIconButton
 
 sealed class SearchItems(
     val iconID: Int,
@@ -91,7 +91,12 @@ fun HeaderFood(
                         }
                         innerTextField()
                     }
-                    FilterButton()
+                    CustomIconButton(
+                        iconID = R.drawable.filter_icon,
+                        iconDescr = "filter",
+                        onClick = {}
+                    )
+                   // FilterButton()
                 }
             },
             cursorBrush = SolidColor(MaterialTheme.colorScheme.onSecondary)

@@ -2,6 +2,7 @@ package com.fooddeliveryappui.app.screens.order
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,13 +18,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -32,16 +31,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.fooddeliveryappui.app.LocalNavController
 import com.fooddeliveryappui.app.R
 import com.fooddeliveryappui.app.components.AddToCartButton
 import com.fooddeliveryappui.app.components.CustomCheckbox
 import com.fooddeliveryappui.app.components.CustomDot
+import com.fooddeliveryappui.app.components.CustomIconButton
 import com.fooddeliveryappui.app.components.DashedLine
 import com.fooddeliveryappui.app.components.Devider
-import com.fooddeliveryappui.app.components.FavouriteButton
-import com.fooddeliveryappui.app.components.IncreaseButton
 import com.fooddeliveryappui.app.components.Rate
-import com.fooddeliveryappui.app.components.DecreaseButton
 import com.fooddeliveryappui.app.screens.food.MenuTabsContentItems
 
 @Composable
@@ -49,34 +47,42 @@ fun OrderScreen(
     viewModel: OrderScreenViewModel = hiltViewModel(),
     item: MenuTabsContentItems
 ) {
-    val counterState = viewModel.counterState.collectAsStateWithLifecycle()
+    val quantityState = viewModel.quantityState.collectAsStateWithLifecycle()
     val selectedIngredients = viewModel.selectedIngredients.collectAsStateWithLifecycle()
 
-    HeaderOrder(
-        item = item
-    )
-    Spacer(Modifier.height(12.dp))
-    ContentOrder(
-        item = item,
-        counterState = counterState.value,
-        onClickIncrease = { viewModel.іncreaseValue() },
-        onClickDecrease = { viewModel.decreaseValue() },
-        selectedIngredients = selectedIngredients.value,
-        onCheckChange = viewModel::toggleIngredient
-    )
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Spacer(modifier = Modifier.height(32.dp))
+        HeaderOrder(
+            item = item
+        )
+        Spacer(Modifier.height(12.dp))
+        ContentOrder(
+            item = item,
+            quantityState = quantityState.value,
+            onClickIncrease = { viewModel.іncreaseValue() },
+            onClickDecrease = { viewModel.decreaseValue() },
+            selectedIngredients = selectedIngredients.value,
+            onCheckChange = viewModel::toggleIngredient
+        )
+    }
 }
 
 @Composable
 fun ContentOrder(
     modifier: Modifier = Modifier,
     item: MenuTabsContentItems,
-    counterState: Int,
+    quantityState: Int,
     selectedIngredients: Set<String>,
     onClickIncrease: () -> Unit,
     onClickDecrease: () -> Unit,
     onCheckChange: (String) -> Unit
 ) {
-    val isEnabled = counterState > 1
+
+    val isEnabled = rememberSaveable(quantityState) {
+        mutableStateOf(quantityState > 1)
+    }
 
     Column(
         modifier = modifier
@@ -113,19 +119,23 @@ fun ContentOrder(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                DecreaseButton(
-                    isEnabled = isEnabled,
-                    onClickDecrease = onClickDecrease
+                CustomIconButton(
+                    iconID = R.drawable.subtract_icon,
+                    iconDescr = "subtract quantity",
+                    onClick = onClickDecrease,
+                    isEnabled = isEnabled.value
                 )
                 Text(
-                    text = "$counterState",
+                    text = "${quantityState}",
                     color = MaterialTheme.colorScheme.onSecondary,
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Normal,
                     lineHeight = 22.sp
                 )
-                IncreaseButton(
-                    onClickIncrease = onClickIncrease
+                CustomIconButton(
+                    iconID = R.drawable.add_icon,
+                    iconDescr = "add quantity",
+                    onClick = onClickIncrease
                 )
             }
         }
@@ -191,6 +201,8 @@ fun HeaderOrder(
     modifier: Modifier = Modifier,
     item: MenuTabsContentItems
 ) {
+    val navController = LocalNavController.current
+
     Column(
         modifier = modifier
             .background(MaterialTheme.colorScheme.background)
@@ -209,7 +221,13 @@ fun HeaderOrder(
                 ) {
                     Icon(
                         modifier = Modifier
-                            .size(13.dp),
+                            .size(13.dp)
+                            .clip(RoundedCornerShape(30.dp))
+                            .clickable(
+                                onClick = {
+                                    navController.popBackStack()
+                                }
+                            ),
                         painter = painterResource(R.drawable.back_icon),
                         contentDescription = stringResource(R.string.turn_back),
                         tint = MaterialTheme.colorScheme.primary
@@ -229,7 +247,12 @@ fun HeaderOrder(
                     Rate(rate = item.rate)
                 }
             }
-            FavouriteButton()
+            CustomIconButton(
+                iconID = R.drawable.favourite_icon,
+                iconSize = 12.dp,
+                iconDescr = "favourite",
+                onClick = {}
+            )
         }
     }
 }

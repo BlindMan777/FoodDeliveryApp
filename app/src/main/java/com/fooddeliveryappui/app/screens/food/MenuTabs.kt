@@ -35,10 +35,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.fooddeliveryappui.app.LocalNavController
+import com.fooddeliveryappui.app.OrderRoute
 import com.fooddeliveryappui.app.R
 import com.fooddeliveryappui.app.components.CustomDot
+import com.fooddeliveryappui.app.components.CustomIconButton
 import com.fooddeliveryappui.app.components.Devider
-import com.fooddeliveryappui.app.components.FilterButton
 import com.fooddeliveryappui.app.components.Rate
 
 val menuItems = listOf(
@@ -206,6 +208,7 @@ fun MenuTabs(
     modifier: Modifier = Modifier,
     viewModel: MenuViewModel = hiltViewModel(),
 ) {
+    val navController = LocalNavController.current
 
     val selectedMenuItem = viewModel.selectedMenuItem.collectAsState()
 
@@ -328,7 +331,11 @@ fun MenuTabs(
                         fontWeight = FontWeight.Light
                     )
                 }
-                FilterButton()
+                CustomIconButton(
+                    iconID = R.drawable.filter_icon,
+                    iconDescr = "filter",
+                    onClick = {}
+                )
             }
             Spacer(modifier = Modifier.height(12.dp))
             LazyColumn(
@@ -337,7 +344,8 @@ fun MenuTabs(
             ) {
                 items(currentContent) { item ->
                     MenuTabContentItem(
-                        menuTabsContentItem = item
+                        menuTabsContentItem = item,
+                        onClick = { navController.navigate(OrderRoute) }
                     )
                 }
             }
@@ -393,11 +401,15 @@ fun RowScope.MenuTab(
 @Composable
 fun MenuTabContentItem(
     modifier: Modifier = Modifier,
-    menuTabsContentItem: MenuTabsContentItems
+    menuTabsContentItem: MenuTabsContentItems,
+    onClick: () -> Unit
 ) {
     Column(
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable(
+                onClick = onClick
+            ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
